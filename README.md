@@ -16,7 +16,7 @@ Uygulama, özellikle **auth.log** ve benzeri log dosyalarını işleyerek güven
   * `rapor.csv` (tüm alertler)
   * `riskli_ipler.csv` (IP skorları)
 * 🖥️ Tkinter tabanlı GUI arayüz
-* ⚙️ Anomali motoru altyapısı (henüz aktif değil)
+* ⚙️ Anomali motoru altyapısı 
 
 ---
 
@@ -86,9 +86,9 @@ SentinelLog/
 
 ### 4. Anomaly Engine (`core/anomaly_engine.py`)
 
-* Şu an **pasif (skeleton yapı)**
-* ML tabanlı anomali tespiti için hazırlanmış
-* Henüz alert üretmez
+* Şu an **aktif (skeleton yapı)**
+* ML tabanlı anomali tespiti için hazırlanmış (ileride eklenecek) 
+* Anomali hareketlerinde alert üretir.
 
 ---
 
