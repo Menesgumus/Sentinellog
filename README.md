@@ -156,7 +156,6 @@ Rule engine bu kuralları doğrudan log mesajına uygular.
 ## ⚠️ Mevcut Sınırlamalar
 
 * Parser şu an sınırlı log formatı destekler
-* Anomali tespit sistemi aktif değil
 * Gerçek zamanlı log izleme kısmi (thread altyapısı var)
 
 ---
@@ -165,7 +164,7 @@ Rule engine bu kuralları doğrudan log mesajına uygular.
 
 Bu proje:
 
-* Kural tabanlı log analizi üzerine kuruludur
+* Kural tabanlı ve anomali tabanlı log analizi üzerine kuruludur
 * ML modülü ileride genişletilmek üzere tasarlanmıştır
 
 ---
