@@ -34,3 +34,10 @@ kurallar:
     desen: '(?P<src_ip>[\d\.]+).*"(?P<metod>GET|POST|PUT|DELETE) (?P<yol>\S+).*" (?P<kod>500|502|503)'
     seviye: DUSUK
     aciklama: "Sunucu tarafli hata tespit edildi"
+   
+  - id: ROOT_LOGIN
+    ad: "Root Girisi Denemesi"
+    log_turu: auth
+    desen: 'Failed password for root from (?P<src_ip>[\d\.]+)'
+    seviye: KRITIK
+    aciklama: "Root hesabina yetkisiz giris denemesi"

@@ -159,8 +159,10 @@ class SentinelLogApp:
         self.alert_sayisi += 1
         self.sayac_label.config(text=f"Toplam Alert: {self.alert_sayisi}")
 
+        kaynak = alert.get("kaynak_dosya", "")
+        kaynak_str = f"[{kaynak}] " if kaynak else ""
         satir = (
-            f"[{self.alert_sayisi}] {alert.get('zaman', '')} | "
+            f"[{self.alert_sayisi}] {kaynak_str}{alert.get('zaman', '')} | "
             f"{seviye} | "
             f"IP: {alert.get('src_ip', '-')} | "
             f"{alert.get('kural_adi', '')} | "
@@ -191,41 +193,52 @@ class SentinelLogApp:
         self.alert_alani.config(state="disabled")
 
     def _dosya_analiz(self):
-        dosya = filedialog.askopenfilename(
-            title="Log dosyası seç",
+        dosyalar = filedialog.askopenfilenames(
+            title="Log dosyalarını seç (birden fazla seçebilirsin)",
             filetypes=[("Log dosyaları", "*.log"), ("Tüm dosyalar", "*.*")]
         )
-        if not dosya:
+        if not dosyalar:
             return
-        self.durum_label.config(text=f"Analiz ediliyor: {os.path.basename(dosya)}")
-        self._bilgi_yaz(f"Analiz başladı: {dosya}")
-        t = threading.Thread(target=self._analiz_worker, args=(dosya,), daemon=True)
+        self.durum_label.config(text=f"Analiz ediliyor: {len(dosyalar)} dosya")
+        self._bilgi_yaz(f"{len(dosyalar)} dosya analiz edilecek.")
+        t = threading.Thread(target=self._coklu_analiz_worker, args=(dosyalar,), daemon=True)
         t.start()
 
     def _analiz_worker(self, dosya_yolu: str):
-        ad = os.path.basename(dosya_yolu).lower()
-        if "auth" in ad:
-            log_turu = "auth"
-        elif "access" in ad:
-            log_turu = "access"
-        elif "ufw" in ad:
-            log_turu = "ufw"
-        else:
-            log_turu = "auth"
+        pass  # artık _coklu_analiz_worker kullanılıyor
 
-        sayac = 0
-        with open(dosya_yolu, "r", encoding="utf-8", errors="ignore") as f:
-            for satir in f:
-                log_verisi = log_parcala(satir, log_turu)
-                if not log_verisi:
-                    continue
-                alertler = kurallari_uygula(log_verisi, self.kurallar)
-                for alert in alertler:
-                    alert_isle(alert)
-                    self.kuyruk.put(("alert", alert))
-                    sayac += 1
+    def _coklu_analiz_worker(self, dosyalar: tuple):
+        toplam = 0
+        for dosya_yolu in dosyalar:
+            ad = os.path.basename(dosya_yolu).lower()
+            if "auth" in ad:
+                log_turu = "auth"
+            elif "access" in ad:
+                log_turu = "access"
+            elif "ufw" in ad:
+                log_turu = "ufw"
+            else:
+                log_turu = "auth"
 
-        self.kuyruk.put(("bilgi", f"Analiz tamamlandı. {sayac} alert üretildi."))
+            sayac = 0
+            self.kuyruk.put(("bilgi", f"[{ad}] analiz başladı..."))
+
+            with open(dosya_yolu, "r", encoding="utf-8", errors="ignore") as f:
+                for satir in f:
+                    log_verisi = log_parcala(satir, log_turu)
+                    if not log_verisi:
+                        continue
+                    alertler = kurallari_uygula(log_verisi, self.kurallar)
+                    for alert in alertler:
+                        alert["kaynak_dosya"] = ad  # hangi dosyadan geldiği
+                        alert_isle(alert)
+                        self.kuyruk.put(("alert", alert))
+                        sayac += 1
+
+            self.kuyruk.put(("bilgi", f"[{ad}] tamamlandı → {sayac} alert"))
+            toplam += sayac
+
+        self.kuyruk.put(("bilgi", f"Tüm dosyalar tamamlandı. Toplam {toplam} alert."))
         self.kuyruk.put(("durum", "Hazır"))
 
     def _canli_baslat(self):
