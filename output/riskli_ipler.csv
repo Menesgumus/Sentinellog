@@ -1,0 +1,22 @@
+zaman,ip,kural,seviye,skor,tehdit
+Jan 10 03:45:01,192.168.1.50,SSH Kaba Kuvvet Saldırısı,YUKSEK,5,ORTA
+Jan 10 03:45:02,192.168.1.50,SSH Kaba Kuvvet Saldırısı,YUKSEK,10,YUKSEK
+Jan 10 03:45:03,192.168.1.50,SSH Kaba Kuvvet Saldırısı,YUKSEK,15,KRITIK
+Jan 10 03:45:04,192.168.1.99,Gecersiz Kullanici Girisimi,YUKSEK,5,ORTA
+Jan 10 03:45:06,192.168.1.50,SSH Kaba Kuvvet Saldırısı,YUKSEK,20,KRITIK
+Jan 10 03:45:07,45.33.32.156,Gecersiz Kullanici Girisimi,YUKSEK,5,ORTA
+Jan 10 03:45:08,45.33.32.156,SSH Kaba Kuvvet Saldırısı,YUKSEK,10,YUKSEK
+Jan 10 03:45:01,192.168.1.50,SSH Kaba Kuvvet Saldırısı,YUKSEK,5,ORTA
+Jan 10 03:45:02,192.168.1.50,SSH Kaba Kuvvet Saldırısı,YUKSEK,10,YUKSEK
+Jan 10 03:45:03,192.168.1.50,SSH Kaba Kuvvet Saldırısı,YUKSEK,15,KRITIK
+Jan 10 03:45:04,192.168.1.99,Gecersiz Kullanici Girisimi,YUKSEK,5,ORTA
+Jan 10 03:45:06,192.168.1.50,SSH Kaba Kuvvet Saldırısı,YUKSEK,20,KRITIK
+Jan 10 03:45:07,45.33.32.156,Gecersiz Kullanici Girisimi,YUKSEK,5,ORTA
+Jan 10 03:45:08,45.33.32.156,SSH Kaba Kuvvet Saldırısı,YUKSEK,10,YUKSEK
+Jan 10 03:45:01,192.168.1.50,SSH Kaba Kuvvet Saldırısı,YUKSEK,5,ORTA
+Jan 10 03:45:02,192.168.1.50,SSH Kaba Kuvvet Saldırısı,YUKSEK,10,YUKSEK
+Jan 10 03:45:03,192.168.1.50,SSH Kaba Kuvvet Saldırısı,YUKSEK,15,KRITIK
+Jan 10 03:45:04,192.168.1.99,Gecersiz Kullanici Girisimi,YUKSEK,5,ORTA
+Jan 10 03:45:06,192.168.1.50,SSH Kaba Kuvvet Saldırısı,YUKSEK,20,KRITIK
+Jan 10 03:45:07,45.33.32.156,Gecersiz Kullanici Girisimi,YUKSEK,5,ORTA
+Jan 10 03:45:08,45.33.32.156,SSH Kaba Kuvvet Saldırısı,YUKSEK,10,YUKSEK

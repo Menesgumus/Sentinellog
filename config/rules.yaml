@@ -1,0 +1,36 @@
+kurallar:
+
+  - id: SSH_BRUTE_FORCE
+    ad: "SSH Kaba Kuvvet Saldırısı"
+    log_turu: auth
+    desen: 'Failed password for .* from (?P<src_ip>[\d\.]+)'
+    seviye: YUKSEK
+    aciklama: "Tekrarlayan hatali sifre denemesi tespit edildi"
+
+  - id: GECERSIZ_KULLANICI
+    ad: "Gecersiz Kullanici Girisimi"
+    log_turu: auth
+    desen: 'Invalid user (?P<kullanici>\S+) from (?P<src_ip>[\d\.]+)'
+    seviye: YUKSEK
+    aciklama: "Sistemde olmayan kullaniciyla giris denemesi"
+
+  - id: UFW_ENGEL
+    ad: "Firewall Engeli"
+    log_turu: ufw
+    desen: 'UFW BLOCK.*SRC=(?P<src_ip>[\d\.]+).*DST=(?P<dst_ip>[\d\.]+)'
+    seviye: ORTA
+    aciklama: "Firewall tarafindan engellenen baglanti"
+
+  - id: HTTP_YETKISIZ
+    ad: "Yetkisiz HTTP Erisimi"
+    log_turu: access
+    desen: '(?P<src_ip>[\d\.]+).*"(?P<metod>GET|POST|PUT|DELETE) (?P<yol>\S+).*" (?P<kod>401|403)'
+    seviye: ORTA
+    aciklama: "Yetkisiz HTTP erisim denemesi"
+
+  - id: HTTP_HATA
+    ad: "Sunucu Hatasi"
+    log_turu: access
+    desen: '(?P<src_ip>[\d\.]+).*"(?P<metod>GET|POST|PUT|DELETE) (?P<yol>\S+).*" (?P<kod>500|502|503)'
+    seviye: DUSUK
+    aciklama: "Sunucu tarafli hata tespit edildi"
