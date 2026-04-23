@@ -1,0 +1,5 @@
+2024-01-10 03:45:00 EventID:1000 Application WORKSTATION01 Uygulama hatası Uygulama:explorer.exe Hata:0xc0000005
+2024-01-10 03:46:00 EventID:1000 Application WORKSTATION01 Uygulama hatası Uygulama:svchost.exe Hata:0xc0000374
+2024-01-10 03:47:00 EventID:1000 Application WORKSTATION01 Uygulama hatası Uygulama:powershell.exe Hata:0xc0000005
+2024-01-10 03:48:00 EventID:1000 Application WORKSTATION01 Uygulama hatası Uygulama:cmd.exe Hata:0xc0000005
+2024-01-10 03:49:00 EventID:1000 Application WORKSTATION01 Uygulama hatası Uygulama:wscript.exe Hata:0xc0000005

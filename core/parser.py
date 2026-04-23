@@ -66,3 +66,39 @@ def log_parcala(satir: str, log_turu: str) -> dict:
         "mesaj": satir,
         "ham": satir
     }
+
+def windows_log_parcala(satir: str) -> dict:
+    """
+    Windows Event Log formatını parse eder.
+    Format: 2024-01-10 03:45:01 EventID:4625 Security WORKSTATION01 ...
+    """
+    satir = satir.strip()
+    if not satir:
+        return {}
+
+    desen = r"(?P<tarih>\d{4}-\d{2}-\d{2})\s+(?P<saat>[\d:]+)\s+EventID:(?P<event_id>\d+)\s+(?P<kanal>\S+)\s+(?P<makine>\S+)\s+(?P<mesaj>.+)"
+    eslesme = re.match(desen, satir)
+
+    if not eslesme:
+        return {}
+
+    event_id = int(eslesme.group("event_id"))
+
+    ip_eslesme = re.search(r"IP:([\d\.]+)", eslesme.group("mesaj"))
+    src_ip = ip_eslesme.group(1) if ip_eslesme else "-"
+
+    kullanici_eslesme = re.search(r"Kullanici:(\S+)", eslesme.group("mesaj"))
+    kullanici = kullanici_eslesme.group(1) if kullanici_eslesme else "-"
+
+    return {
+        "log_turu":  "winevent",
+        "platform":  "windows",
+        "zaman":     f"{eslesme.group('tarih')} {eslesme.group('saat')}",
+        "event_id":  event_id,
+        "kanal":     eslesme.group("kanal"),
+        "makine":    eslesme.group("makine"),
+        "kullanici": kullanici,
+        "src_ip":    src_ip,
+        "mesaj":     eslesme.group("mesaj"),
+        "ham":       satir
+    }

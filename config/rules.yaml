@@ -41,3 +41,38 @@ kurallar:
     desen: 'Failed password for root from (?P<src_ip>[\d\.]+)'
     seviye: KRITIK
     aciklama: "Root hesabina yetkisiz giris denemesi"
+  
+  - id: WIN_FAILED_LOGIN
+    ad: "Windows Basarisiz Oturum Acma"
+    log_turu: winevent
+    desen: 'EventID:4625.*IP:(?P<src_ip>[\d\.]+)'
+    seviye: YUKSEK
+    aciklama: "Windows uzerinde basarisiz oturum acma denemesi"
+
+  - id: WIN_ADMIN_PRIVILEGES
+    ad: "Yonetici Ayricaligi Atandi"
+    log_turu: winevent
+    desen: 'EventID:4672.*IP:(?P<src_ip>[\d\.]+)'
+    seviye: YUKSEK
+    aciklama: "Kullaniciya yonetici ayricaligi atandi"
+
+  - id: WIN_NEW_USER
+    ad: "Yeni Kullanici Olusturuldu"
+    log_turu: winevent
+    desen: 'EventID:4720.*IP:(?P<src_ip>[\d\.]+)'
+    seviye: YUKSEK
+    aciklama: "Sistemde yeni kullanici hesabi olusturuldu"
+
+  - id: WIN_GROUP_MEMBER
+    ad: "Guvenlik Grubuna Uye Eklendi"
+    log_turu: winevent
+    desen: 'EventID:4728.*IP:(?P<src_ip>[\d\.]+)'
+    seviye: YUKSEK
+    aciklama: "Guvenlik grubuna yetkisiz uye eklendi"
+
+  - id: WIN_SCHEDULED_TASK
+    ad: "Zamanlanmis Gorev Olusturuldu"
+    log_turu: winevent
+    desen: 'EventID:4698.*IP:(?P<src_ip>[\d\.]+)'
+    seviye: YUKSEK
+    aciklama: "Suphelibir zamanlanmis gorev olusturuldu"

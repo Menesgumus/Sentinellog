@@ -14,3 +14,19 @@ Jan 10 03:45:05 server sshd[1234]: Accepted password for deploy from 10.0.0.5 po
 Jan 10 03:45:06 server sshd[1234]: Failed password for root from 192.168.1.50 port 4521 ssh2
 Jan 10 03:45:07 server sshd[1234]: Invalid user admin from 45.33.32.156 port 6512 ssh2
 Jan 10 03:45:08 server sshd[1234]: Failed password for root from 45.33.32.156 port 6512 ssh2
+Jan 10 03:45:01 server sshd[1234]: Failed password for root from 192.168.1.50 port 4521 ssh2
+Jan 10 03:45:02 server sshd[1234]: Failed password for root from 192.168.1.50 port 4521 ssh2
+Jan 10 03:45:03 server sshd[1234]: Failed password for admin from 192.168.1.50 port 4521 ssh2
+Jan 10 03:45:04 server sshd[1234]: Invalid user test from 192.168.1.99 port 5521 ssh2
+Jan 10 03:45:05 server sshd[1234]: Accepted password for deploy from 10.0.0.5 port 2222 ssh2
+Jan 10 03:45:06 server sshd[1234]: Failed password for root from 192.168.1.50 port 4521 ssh2
+Jan 10 03:45:07 server sshd[1234]: Invalid user admin from 45.33.32.156 port 6512 ssh2
+Jan 10 03:45:08 server sshd[1234]: Failed password for root from 45.33.32.156 port 6512 ssh2
+Jan 10 03:45:01 server sshd[1234]: Failed password for root from 192.168.1.50 port 4521 ssh2
+Jan 10 03:45:02 server sshd[1234]: Failed password for root from 192.168.1.50 port 4521 ssh2
+Jan 10 03:45:03 server sshd[1234]: Failed password for admin from 192.168.1.50 port 4521 ssh2
+Jan 10 03:45:04 server sshd[1234]: Invalid user test from 192.168.1.99 port 5521 ssh2
+Jan 10 03:45:05 server sshd[1234]: Accepted password for deploy from 10.0.0.5 port 2222 ssh2
+Jan 10 03:45:06 server sshd[1234]: Failed password for root from 192.168.1.50 port 4521 ssh2
+Jan 10 03:45:07 server sshd[1234]: Invalid user admin from 45.33.32.156 port 6512 ssh2
+Jan 10 03:45:08 server sshd[1234]: Failed password for root from 45.33.32.156 port 6512 ssh2

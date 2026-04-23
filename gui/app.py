@@ -13,6 +13,8 @@ from core.parser import log_parcala
 from core.rule_engine import kurallari_yukle, kurallari_uygula
 from core.alert_manager import alert_isle, ip_skorlari
 from core.anomaly_engine import AnomalyEngine
+from core.platform_manager import mevcut_loglar, sistem_tespit
+from core.windows_event_parser import pywin32_yuklu, event_log_oku, canli_event_izle
 
 RENKLER = {
     "bg":           "#1e1e1e",
@@ -90,11 +92,12 @@ class SentinelLogApp:
         ).pack(anchor="w", padx=15, pady=(20, 5))
 
         butonlar = [
-            ("📂  Dosya Analizi",   self._dosya_analiz),
-            ("🔴  Canlı İzleme",    self._canli_baslat),
-            ("⏹  İzlemeyi Durdur", self._canli_durdur),
-            ("📝  Kural Editörü",   self._kural_editor_ac),
-            ("🗑  Ekranı Temizle",  self._ekrani_temizle),
+            ("📂  Dosya Analizi",    self._dosya_analiz),
+            ("🖥  Sistem Logları",   self._sistem_loglari_ac),
+            ("🔴  Canlı İzleme",     self._canli_baslat),
+            ("⏹  İzlemeyi Durdur",  self._canli_durdur),
+            ("📝  Kural Editörü",    self._kural_editor_ac),
+            ("🗑  Ekranı Temizle",   self._ekrani_temizle),
         ]
 
         for metin, komut in butonlar:
@@ -257,7 +260,6 @@ class SentinelLogApp:
     # ------------------------------------------------------------------ #
 
     def _log_turu_tespit(self, dosya_adi: str) -> str:
-        """Dosya adından log türünü belirler."""
         ad = dosya_adi.lower()
         if "auth" in ad:
             return "auth"
@@ -265,23 +267,26 @@ class SentinelLogApp:
             return "access"
         if "ufw" in ad:
             return "ufw"
-        return "auth"  # varsayılan
+        if "windows" in ad or "security" in ad or "system" in ad or "app" in ad:
+            return "winevent"
+        return "auth"
 
     def _satiri_isle(self, satir: str, log_turu: str,
                      dosya_adi: str = "") -> list:
-        """
-        Tek log satırını hem kural motoru hem anomali motoru üzerinden geçirir.
-        Birleşik alert listesi döner.
-        """
-        log_verisi = log_parcala(satir, log_turu)
+        from core.parser import windows_log_parcala
+
+        if log_turu == "winevent":
+            log_verisi = windows_log_parcala(satir)
+        else:
+            log_verisi = log_parcala(satir, log_turu)
+
         if not log_verisi:
             return []
 
-        kural_alertleri = kurallari_uygula(log_verisi, self.kurallar)
+        kural_alertleri   = kurallari_uygula(log_verisi, self.kurallar)
         anomali_alertleri = self.anomaly.log_isle(log_verisi, kural_alertleri)
 
         tum_alertler = kural_alertleri + anomali_alertleri
-
         for alert in tum_alertler:
             if dosya_adi:
                 alert["kaynak_dosya"] = dosya_adi
@@ -381,6 +386,191 @@ class SentinelLogApp:
         self.sayac_label.config(text="Toplam Alert: 0  |  Anomali: 0")
         self.anomali_label.config(text="Henüz anomali yok")
         self.ip_listesi.delete(0, "end")
+    def _sistem_loglari_ac(self):
+        """Platform tespiti yapıp mevcut sistem loglarını gösterir."""
+
+        pencere = tk.Toplevel(self.root)
+        pencere.title("Sistem Logları")
+        pencere.geometry("700x500")
+        pencere.configure(bg=RENKLER["bg"])
+
+        platform = sistem_tespit()
+        bilgi = mevcut_loglar()
+
+        tk.Label(
+            pencere, text=f"Sistem Logları — {platform.upper()}",
+            font=("Segoe UI", 12, "bold"),
+            bg=RENKLER["bg"], fg=RENKLER["baslik"]
+        ).pack(anchor="w", padx=15, pady=(15, 5))
+
+        tk.Label(
+            pencere,
+            text="Tespit edilen log kaynakları aşağıda listelendi. Analiz etmek istediğini seç.",
+            font=("Segoe UI", 9),
+            bg=RENKLER["bg"], fg="#858585"
+        ).pack(anchor="w", padx=15, pady=(0, 10))
+
+        # Liste çerçevesi
+        cerceve = tk.Frame(pencere, bg=RENKLER["panel"])
+        cerceve.pack(fill="both", expand=True, padx=15, pady=5)
+
+        liste = tk.Listbox(
+            cerceve,
+            bg=RENKLER["bg"], fg=RENKLER["yazi"],
+            font=("Consolas", 10), relief="flat",
+            selectbackground="#0e639c", height=15
+        )
+        liste.pack(fill="both", expand=True, padx=5, pady=5)
+
+        # Platforma göre listeyi doldur
+        log_kaynaklari = []  # (görünen_ad, yol_veya_kanal, tip)
+
+        if platform == "windows":
+            kanallar = bilgi.get("kanallar", [])
+            if not kanallar:
+                liste.insert("end", "⚠  pywin32 yüklü değil")
+                liste.insert("end", "   Yüklemek için: pip install pywin32")
+            else:
+                for k in kanallar:
+                    liste.insert("end", f"🪟  {k['ad']} (Event Log)")
+                    log_kaynaklari.append((k["ad"], k["ad"], "winevent"))
+
+        else:  # linux / macos
+            loglar = bilgi.get("loglar", {})
+            if not loglar:
+                liste.insert("end", "⚠  Erişilebilir log dosyası bulunamadı")
+                liste.insert("end", "   Root yetkisi gerekebilir")
+            else:
+                for tur, yol in loglar.items():
+                    liste.insert("end", f"📄  {tur.upper():10} → {yol}")
+                    log_kaynaklari.append((tur, yol, tur))
+
+        # Alt butonlar
+        alt = tk.Frame(pencere, bg=RENKLER["bg"])
+        alt.pack(fill="x", padx=15, pady=10)
+
+        durum = tk.Label(
+            alt, text="",
+            font=("Segoe UI", 9),
+            bg=RENKLER["bg"], fg="#858585"
+        )
+        durum.pack(side="bottom", anchor="w", pady=5)
+
+        def secili_analiz_et():
+            secim = liste.curselection()
+            if not secim:
+                durum.config(text="Lütfen bir log kaynağı seçin.", fg="#ffd700")
+                return
+            idx = secim[0]
+            if idx >= len(log_kaynaklari):
+                return
+
+            ad, kaynak, tip = log_kaynaklari[idx]
+
+            if tip == "winevent":
+                durum.config(text=f"Okunuyor: {kaynak}...", fg="#858585")
+                pencere.destroy()
+                self._bilgi_yaz(f"Windows Event Log okunuyor: {kaynak}")
+                t = threading.Thread(
+                    target=self._winevent_analiz_worker,
+                    args=(kaynak,), daemon=True
+                )
+                t.start()
+            else:
+                pencere.destroy()
+                self.anomaly.sifirla()
+                self._bilgi_yaz(f"Sistem logu analiz ediliyor: {kaynak}")
+                t = threading.Thread(
+                    target=self._coklu_analiz_worker,
+                    args=((kaynak,),), daemon=True
+                )
+                t.start()
+
+        def secili_canli_izle():
+            secim = liste.curselection()
+            if not secim:
+                durum.config(text="Lütfen bir log kaynağı seçin.", fg="#ffd700")
+                return
+            idx = secim[0]
+            if idx >= len(log_kaynaklari):
+                return
+
+            ad, kaynak, tip = log_kaynaklari[idx]
+
+            if tip == "winevent":
+                if self.canli_aktif:
+                    durum.config(text="Canlı izleme zaten çalışıyor.", fg="#ffd700")
+                    return
+                pencere.destroy()
+                self.canli_aktif = True
+                self.durum_label.config(text=f"🔴 Canlı: {kaynak}")
+                self._bilgi_yaz(f"Windows Event Log canlı izleme: {kaynak}")
+                self._canli_aktif_flag = [True]
+                t = threading.Thread(
+                    target=canli_event_izle,
+                    args=(kaynak, self.kuyruk, self._canli_aktif_flag,
+                          self.kurallar, self.anomaly),
+                    daemon=True
+                )
+                t.start()
+            else:
+                pencere.destroy()
+                self._canli_baslat_dosya(kaynak)
+
+        tk.Button(
+            alt, text="📊  Analiz Et", command=secili_analiz_et,
+            bg=RENKLER["buton"], fg="white",
+            font=("Segoe UI", 10), relief="flat",
+            padx=15, pady=6, cursor="hand2"
+        ).pack(side="left", padx=5)
+
+        tk.Button(
+            alt, text="🔴  Canlı İzle", command=secili_canli_izle,
+            bg="#c0392b", fg="white",
+            font=("Segoe UI", 10), relief="flat",
+            padx=15, pady=6, cursor="hand2"
+        ).pack(side="left", padx=5)
+
+    def _winevent_analiz_worker(self, kanal: str):
+        """Windows Event Log'u okur ve analiz eder."""
+        kayitlar = event_log_oku(kanal, max_kayit=1000)
+        if not kayitlar:
+            self.kuyruk.put(("bilgi", f"[{kanal}] Kayıt bulunamadı veya erişim hatası."))
+            self.kuyruk.put(("durum", "Hazır"))
+            return
+
+        self.kuyruk.put(("bilgi", f"[{kanal}] {len(kayitlar)} kayıt okundu, analiz ediliyor..."))
+        sayac = 0
+
+        for log_verisi in kayitlar:
+            from core.rule_engine import kurallari_uygula
+            from core.alert_manager import alert_isle
+
+            kural_alertleri = kurallari_uygula(log_verisi, self.kurallar)
+            anomali_alertleri = self.anomaly.log_isle(log_verisi, kural_alertleri)
+
+            for alert in kural_alertleri + anomali_alertleri:
+                alert["kaynak_dosya"] = kanal
+                alert_isle(alert)
+                self.kuyruk.put(("alert", alert))
+                sayac += 1
+
+        self.kuyruk.put(("bilgi", f"[{kanal}] tamamlandı → {sayac} alert"))
+        self.kuyruk.put(("durum", "Hazır"))
+
+    def _canli_baslat_dosya(self, dosya_yolu: str):
+        """Belirtilen dosyayı canlı izlemeye başlar."""
+        if self.canli_aktif:
+            self._bilgi_yaz("Canlı izleme zaten çalışıyor.")
+            return
+        self.canli_aktif = True
+        ad = os.path.basename(dosya_yolu)
+        self.durum_label.config(text=f"🔴 Canlı: {ad}")
+        self._bilgi_yaz(f"Canlı izleme başladı: {dosya_yolu}")
+        self.canli_thread = threading.Thread(
+            target=self._canli_worker, args=(dosya_yolu,), daemon=True
+        )
+        self.canli_thread.start()
 
     def _kural_editor_ac(self):
         pencere = tk.Toplevel(self.root)

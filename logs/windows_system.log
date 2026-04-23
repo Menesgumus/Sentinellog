@@ -1,0 +1,6 @@
+2024-01-10 03:45:00 EventID:7045 System WORKSTATION01 Yeni servis kuruldu Servis:RemoteAccessTrojan Tip:kernel_driver
+2024-01-10 03:46:00 EventID:7036 System WORKSTATION01 Servis durumu değişti Servis:Spooler Durum:stopped
+2024-01-10 03:46:30 EventID:7045 System WORKSTATION01 Yeni servis kuruldu Servis:nc_backdoor Tip:user_mode
+2024-01-10 03:47:00 EventID:7036 System WORKSTATION01 Servis durumu değişti Servis:WinDefend Durum:stopped
+2024-01-10 03:47:30 EventID:7045 System WORKSTATION01 Yeni servis kuruldu Servis:keylogger_svc Tip:kernel_driver
+2024-01-10 04:00:00 EventID:7036 System WORKSTATION01 Servis durumu değişti Servis:wuauserv Durum:running

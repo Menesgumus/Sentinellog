@@ -1,0 +1,20 @@
+2024-01-10 03:45:01 EventID:4625 Security WORKSTATION01 Basarisiz oturum acma Kullanici:Administrator IP:192.168.1.50 Port:445
+2024-01-10 03:45:03 EventID:4625 Security WORKSTATION01 Basarisiz oturum acma Kullanici:Administrator IP:192.168.1.50 Port:445
+2024-01-10 03:45:05 EventID:4625 Security WORKSTATION01 Basarisiz oturum acma Kullanici:Administrator IP:192.168.1.50 Port:445
+2024-01-10 03:45:07 EventID:4625 Security WORKSTATION01 Basarisiz oturum acma Kullanici:Administrator IP:192.168.1.50 Port:445
+2024-01-10 03:45:09 EventID:4625 Security WORKSTATION01 Basarisiz oturum acma Kullanici:Administrator IP:192.168.1.50 Port:445
+2024-01-10 03:45:11 EventID:4625 Security WORKSTATION01 Basarisiz oturum acma Kullanici:Guest IP:192.168.1.50 Port:445
+2024-01-10 03:45:13 EventID:4625 Security WORKSTATION01 Basarisiz oturum acma Kullanici:Guest IP:192.168.1.50 Port:445
+2024-01-10 03:46:01 EventID:4624 Security WORKSTATION01 Basarili oturum acma Kullanici:deploy IP:10.0.0.5 Port:3389
+2024-01-10 03:46:15 EventID:4672 Security WORKSTATION01 Yonetici ayricaligi atandi Kullanici:deploy IP:10.0.0.5
+2024-01-10 03:47:00 EventID:4720 Security WORKSTATION01 Yeni kullanici hesabi olusturuldu Kullanici:hacker_user IP:10.0.0.5
+2024-01-10 03:47:30 EventID:4728 Security WORKSTATION01 Guvenlik grubuna uye eklendi Kullanici:hacker_user Grup:Administrators IP:10.0.0.5
+2024-01-10 03:48:00 EventID:4625 Security WORKSTATION01 Basarisiz oturum acma Kullanici:root IP:45.33.32.156 Port:3389
+2024-01-10 03:48:02 EventID:4625 Security WORKSTATION01 Basarisiz oturum acma Kullanici:admin IP:45.33.32.156 Port:3389
+2024-01-10 03:48:04 EventID:4625 Security WORKSTATION01 Basarisiz oturum acma Kullanici:test IP:45.33.32.156 Port:3389
+2024-01-10 03:48:06 EventID:4625 Security WORKSTATION01 Basarisiz oturum acma Kullanici:user IP:45.33.32.156 Port:3389
+2024-01-10 03:48:08 EventID:4648 Security WORKSTATION01 Acik kimlik bilgisi ile giris Kullanici:SYSTEM IP:127.0.0.1
+2024-01-10 03:49:00 EventID:4698 Security WORKSTATION01 Zamanlanmis gorev olusturuldu Gorev:malware_task IP:45.33.32.156
+2024-01-10 03:49:30 EventID:4702 Security WORKSTATION01 Zamanlanmis gorev guncellendi Gorev:malware_task IP:45.33.32.156
+2024-01-10 03:50:00 EventID:4672 Security WORKSTATION01 Yonetici ayricaligi atandi Kullanici:hacker_user IP:45.33.32.156
+2024-01-10 03:50:30 EventID:4728 Security WORKSTATION01 Guvenlik grubuna uye eklendi Kullanici:hacker_user Grup:Administrators IP:45.33.32.156
