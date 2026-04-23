@@ -112,6 +112,28 @@ class AnomalyEngine:
             "seviye": "YUKSEK",
             "aciklama": "{pencere}sn içinde {sayi} yetkisiz HTTP erişimi (credential stuffing şüphesi)"
         },
+        {
+            "id": "ANOM_WIN_BRUTE",
+            "ad": "Windows Brute Force Anomalisi",
+            "olay_tipi": "win_hatali_giris",
+            "log_turu": "winevent",
+            "esik": 5,
+            "pencere": 60,
+            "spam_bekleme": 30,
+            "seviye": "KRITIK",
+            "aciklama": "{pencere}sn içinde {sayi} basarisiz Windows girisi (brute force)"
+        },
+        {
+            "id": "ANOM_WIN_PRIV",
+            "ad": "Windows Yetki Yükseltme Anomalisi",
+            "olay_tipi": "win_yetki",
+            "log_turu": "winevent",
+            "esik": 3,
+            "pencere": 120,
+            "spam_bekleme": 60,
+            "seviye": "KRITIK",
+            "aciklama": "{pencere}sn içinde {sayi} yetki degisikligi tespit edildi"
+        },
     ]
 
     def __init__(self):
@@ -154,7 +176,7 @@ class AnomalyEngine:
             return []
 
         # Bu log satırı için olayları kaydet
-        self._olay_kaydet(log_turu, src_ip, mesaj, simdi)
+        self._olay_kaydet(log_turu, src_ip, mesaj, simdi, log_verisi)
 
         # Tüm anomali kurallarını kontrol et
         return self._kontrol_et(log_turu, src_ip, zaman_str, simdi, log_verisi)
@@ -194,7 +216,7 @@ class AnomalyEngine:
 
         return None
 
-    def _olay_kaydet(self, log_turu: str, ip: str, mesaj: str, simdi: datetime):
+    def _olay_kaydet(self, log_turu: str, ip: str, mesaj: str, simdi: datetime, log_verisi: dict = None):
         """Gelen log satırını ilgili olay kuyruğuna ekler."""
         if log_turu == "auth":
             if re.search(r"Failed password", mesaj):
@@ -212,6 +234,13 @@ class AnomalyEngine:
         elif log_turu == "access":
             if re.search(r'" (401|403)', mesaj):
                 self._olaylar[(ip, "http_yetkisiz")].append((simdi, ""))
+        
+        elif log_turu == "winevent":
+            event_id = log_verisi.get("event_id", 0)
+            if event_id == 4625:
+                self._olaylar[(ip, "win_hatali_giris")].append((simdi, ""))
+            elif event_id in (4672, 4720, 4728, 4732):
+                self._olaylar[(ip, "win_yetki")].append((simdi, ""))        
 
     def _pencere_temizle(self, ip: str, olay_tipi: str,
                          pencere: int, simdi: datetime):

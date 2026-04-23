@@ -5,10 +5,8 @@ import yaml
 
 KURAL_DOSYASI = "config/rules.yaml"
 
+
 def kurallari_yukle() -> list:
-    """
-    config/rules.yaml dosyasını okur ve kuralları liste olarak döner.
-    """
     with open(KURAL_DOSYASI, "r", encoding="utf-8") as dosya:
         icerik = yaml.safe_load(dosya)
     return icerik.get("kurallar", [])
@@ -19,7 +17,6 @@ def kurallari_uygula(log_verisi: dict, kurallar: list) -> list:
 
     log_turu = log_verisi.get("log_turu", "")
 
-    # winevent için ham satırı kullan, diğerleri için mesaj
     if log_turu == "winevent":
         mesaj = log_verisi.get("ham", "")
     else:
@@ -36,7 +33,6 @@ def kurallari_uygula(log_verisi: dict, kurallar: list) -> list:
 
         if eslesme:
             gruplar = eslesme.groupdict()
-
             alert = {
                 "kural_id":  kural["id"],
                 "kural_adi": kural["ad"],
@@ -48,7 +44,6 @@ def kurallari_uygula(log_verisi: dict, kurallar: list) -> list:
                 "detay":     gruplar,
                 "ham_log":   log_verisi.get("ham", "")
             }
-
             alertler.append(alert)
 
     return alertler
